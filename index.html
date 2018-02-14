@@ -1,1 +1,304 @@
-<h1>Hello!</h1>
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://kenedict.com/networks/worldcup14/vis/ , thanks Andre!-->
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <title>Dynamic Data - Importing from Gephi (JSON)</title>
+  <script type="text/javascript" src="../util/index.js"></script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <style type="text/css">
+    #mynetwork {
+      width: 800px;
+      height: 800px;
+      border: 1px solid lightgray;
+    }
+    div.nodeContent {
+      position: relative;
+      border: 1px solid lightgray;
+      width: 480px;
+      height: 780px;
+      margin-top: -802px;
+      margin-left: 810px;
+      padding: 10px;
+    }
+    pre {
+      padding: 5px;
+      margin: 5px;
+    }
+    .string {
+      color: green;
+    }
+    .number {
+      color: darkorange;
+    }
+    .boolean {
+      color: blue;
+    }
+    .null {
+      color: magenta;
+    }
+    .key {
+      color: red;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<h2>WIES Nodes</h2>
+<i class="fa fa-flag"></i> We use an icon once in the DOM so the CSS for fontAwesome is loaded.
+<div style="width:700px; font-size:14px; text-align: justify;">
+  Sample text.
+  <br/>
+</div>
+
+<p>
+  <label><input type="checkbox" id="fixed" checked="checked"/>Sample Option 1</label><br>
+  <label><input type="checkbox" id="parseColor"/>Sample Option 2</label>
+</p>
+
+<div id="mynetwork"></div>
+<div class="nodeContent"><h4>Node Content:</h4>
+  <pre id="nodeContent"></pre>
+</div>
+
+<script type="text/javascript">
+  Object.prototype.clone = function() {
+    if (typeof(this)=="object"){
+        var clone = {};
+        for (var prop in this)
+            if (this.hasOwnProperty(prop))
+                clone[prop] = this[prop];
+
+        return clone;
+    }
+  }
+  var network;
+  var nodes = new vis.DataSet();
+  var edges = new vis.DataSet();
+  var gephiImported;
+  var nodeContent = document.getElementById('nodeContent');
+  loadJSON('../data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
+  var container = document.getElementById('mynetwork');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var groups = {
+    ["Grad Student"]: {
+        icon: {
+            code: '\uf0c0',
+            size: 30,
+            color: 'orange'
+        }
+    },
+  }
+  var options = {
+    width: '100%',
+    height: '100%',
+    nodes: {
+        shape: 'icon',
+        icon: {
+          face: 'FontAwesome',
+          code: '\uf0c0',
+          size: 30,
+          color: 'orange'
+        },
+        size: 10,
+        font: {
+            size: 12,
+            face: "tahoma",
+            color: 'black'
+        },
+        borderWidth: 2,
+        heightConstraint: 50,
+        color: {
+          background: 'black'
+        }
+    },
+    edges: {
+        width: 1,
+        smooth: {
+          type: 'vertical',
+        },
+        color: { color: 'black' }
+    },
+    interaction: {
+      hover: true,
+      hoverConnectedEdges:false,
+      navigationButtons: true
+    },
+    physics: {
+      maxVelocity: 60,
+      minVelocity: 2,
+      solver: 'barnesHut',
+      /*stabilization: {
+        enabled: true,
+        fit: true
+      },*/
+      barnesHut: {
+        gravitationalConstant: -5000,
+        centralGravity: 1,
+        avoidOverlap: 0.25,
+        springLength: 95,
+        springConstant: 0.01,
+        damping: 0.1
+      }
+    },
+    layout: {
+      improvedLayout: true
+    }
+  };
+  network = new vis.Network(container, data, options);
+  network.on('click', function (params) {
+    if (params.nodes.length > 0) {
+      var data = nodes.get(params.nodes[0]); // get the data from selected node
+      nodeContent.innerHTML = JSON.stringify(data, undefined, 3); // show the data in the div
+    }
+  })
+  network.on('hoverNode', function(h){
+    var edgesToUpdate = edges.get();
+    var nodesToUpdate = nodes.get();
+    var nodeIds = [h.node];
+
+    for (var i = 0; i < edgesToUpdate.length; ++i) {
+      if (edgesToUpdate[i].to == h.node || edgesToUpdate[i].from == h.node) {
+        edgesToUpdate[i].width = 2;
+        if (nodeIds.indexOf(edgesToUpdate[i].to) == -1){ nodeIds.push(edgesToUpdate[i].to) }
+        if (nodeIds.indexOf(edgesToUpdate[i].from) == -1){ nodeIds.push(edgesToUpdate[i].from) }
+      } else {
+        edgesToUpdate[i].color = { color: 'rgba(0,0,0,0.25)' };
+      }
+    }
+
+    for (var i = 0; i < nodesToUpdate.length; ++i) {
+      var defaultOptions = getDefaultOptions(nodesToUpdate[i]);
+      if (nodeIds.indexOf(nodesToUpdate[i].id) == -1) {
+        var iconFaded = defaultOptions.icon;
+        iconFaded.color = 'rgba(0,0,0,0.25)';
+        nodesToUpdate[i].icon = iconFaded;
+
+        var fontFaded = defaultOptions.font;
+        fontFaded.color = 'rgba(0,0,0,0.25)';
+        nodesToUpdate[i].font = fontFaded;
+
+      } else {
+        nodesToUpdate[i].icon = defaultOptions.icon;
+      }
+    }
+    nodes.update(nodesToUpdate);
+    edges.update(edgesToUpdate);
+  })
+  network.on('blurNode', function(h){
+    var edgesToUpdate = edges.get();
+    var nodesToUpdate = nodes.get();
+    for (var i = 0; i < edgesToUpdate.length; ++i) {
+      edgesToUpdate[i].width = 1;
+      edgesToUpdate[i].color = { color: 'black' };
+    }
+    for (var i = 0; i < nodesToUpdate.length; ++i) {
+      var defaultOptions = getDefaultOptions(nodesToUpdate[i]);
+      nodesToUpdate[i].icon = defaultOptions.icon;
+      nodesToUpdate[i].font = defaultOptions.font;
+    }
+    nodes.update(nodesToUpdate);
+    edges.update(edgesToUpdate);
+  })
+  var firstTime = true;
+  network.on("afterDrawing", function (ctx) {
+    if (firstTime) {
+          network.fit();
+          setTimeout(function () {
+              network.fit();
+          }, 200);
+      }
+      firstTime = false;
+  });
+  network.on("configChange", function() {
+    // this will immediately fix the height of the configuration
+    // wrapper to prevent unecessary scrolls in chrome.
+    // see https://github.com/almende/vis/issues/1568
+    var div = container.getElementsByClassName('vis-configuration-wrapper')[0];
+    div.style["height"] = div.getBoundingClientRect().height + "px";
+  });
+
+  /**
+   * This function fills the DataSets. These DataSets will update the network.
+   */
+  function redrawAll(gephiJSON) {
+    if (gephiJSON.nodes === undefined) {
+      gephiJSON = gephiImported;
+    }
+    else {
+      gephiImported = gephiJSON;
+    }
+    nodes.clear();
+    edges.clear();
+    var parsed = vis.network.gephiParser.parseGephi(gephiJSON, {
+      nodes: {
+        fixed: false,
+        parseColor: false,
+      },
+      edges: {
+        inheritColor: false
+      }
+    });
+    var edited = { nodes: [], edges: []}
+    parsed.nodes.forEach(function(node){
+      var defaultOptions = getDefaultOptions(node);
+      edited.nodes.push({
+        id: node.id,
+        label: node.label,
+        group: node.attributes.Category,
+        //title: 'Category: ' + node.attributes.Category,
+        //icon: defaultOptions.icon.clone(),
+        //color: defaultOptions.color.clone()
+        //x: node.x,
+        //y: node.y,
+        //fixed: true,
+        //size: 200
+      });
+    })
+    parsed.edges.forEach(function(edge){
+      edge.color = options.edges.color;
+      edited.edges.push(edge);
+    })
+    // add the parsed data to the DataSets.
+    nodes.add(edited.nodes);
+    edges.add(edited.edges);
+    var data = nodes.get(2); // get the data from node 2 as example
+    nodeContent.innerHTML = JSON.stringify(data,undefined,3); // show the data in the div
+    network.fit(); // zoom to fit
+  }
+
+  function getDefaultOptions(node) {
+    var color;
+    var icon;
+    var font;
+    var group = (node.group);
+    if (groups.hasOwnProperty(group)) {
+      if (groups[group].hasOwnProperty('color')) {
+        color = groups[group].color.clone()
+      }
+      if (groups[group].hasOwnProperty('icon')) {
+        icon = groups[group].icon.clone()
+      }
+      if (groups[group].hasOwnProperty('font')) {
+        icon = groups[group].font.clone()
+      }
+    }
+    if (!color) { color = options.nodes.color.clone() }
+    if (!icon) { icon = options.nodes.icon.clone() }
+    if (!font) { font = options.nodes.font.clone() }
+    return { color: color, icon: icon, font: font };
+  }
+</script>
+
+
+</body>
+</html>
