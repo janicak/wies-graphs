@@ -3,11 +3,12 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
-  <title>Dynamic Data - Importing from Gephi (JSON)</title>
+  <title>WIES Nodes</title>
 
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
 
   <style type="text/css">
     #mynetwork {
@@ -17,7 +18,7 @@
     }
     div.nodeContent {
       position: absolute;
-      height: 780px;
+      height: auto;
       top: 100px;
       right: 0;
       padding: 10px;
@@ -38,8 +39,19 @@
 
 <h2>WIES Nodes</h2>
 <div class="key">
-<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i> Applied Research</span>
-<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i> Applied Research</span>
+<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i>: Applied Research</span>
+<span style="color:rgb(49,133,156)"><i class="fa fa-bold"></i>: Basic Research</span>
+<span style="color:rgb(99,37,35)"><i class="fa fa-flask"></i>: Faculty</span>
+<span style="color:rgb(204,193,218)"><i class="fa fa-graduation-cap"></i>: Grad Student</span>
+<span style="color:rgb(250,192,144)"><i class="fab fa-angellist"></i>: Outreach - Citizen Science</span>
+<span style="color:rgb(252,213,181)"><i class="fa fa-bell"></i>: Outreach - K-12</span>
+<span style="color:rgb(228,108,10)"><strong>S</strong>: Outreach - Symposia</span>
+<span style="color:rgb(63,128,205)"><i class="fa fa-bullseye"></i>: Major Program</span>
+<span style="color:rgb(79,98,40)"><i class="fab fa-skype"></i>: Summer university classes</span>
+<span style="color:rgb(96,74,123)"><i class="fa fa-pen-square"></i>: UG Student</span>
+<span style="color:rgb(119,147,60)"><i class="fa fa-car"></i>: USC Classes</span>
+<span style="color:rgb(195,214,155)"><i class="fab fa-foursquare"></i>: USC Fellowships</span>
+<span style="color:rgb(166,166,166)"><i class="fa fa-file"></i>: Whitepapers</span>
 </div>
 <button style="visibility: hidden" id="save-positions" type="button" onclick="savePositions();">Save Positions</button>
 <div id="mynetwork"></div>
