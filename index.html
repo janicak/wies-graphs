@@ -4,7 +4,6 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF8">
   <title>Dynamic Data - Importing from Gephi (JSON)</title>
-  <script type="text/javascript" src="./util/index.js"></script>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
@@ -77,6 +76,21 @@
 
         return clone;
     }
+  }
+  function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          success(JSON.parse(xhr.responseText));
+        }
+        else {
+          error(xhr);
+        }
+      }
+    };
+    xhr.open('GET', path, true);
+    xhr.send();
   }
   var network;
   var nodes = new vis.DataSet();
