@@ -97,7 +97,7 @@
   var edges = new vis.DataSet();
   var gephiImported;
   var nodeContent = document.getElementById('nodeContent');
-  loadJSON('../data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
+  loadJSON('./data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
   var container = document.getElementById('mynetwork');
   var data = {
     nodes: nodes,
