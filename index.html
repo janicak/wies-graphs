@@ -7,7 +7,7 @@
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
   <style type="text/css">
     #mynetwork {
@@ -93,12 +93,97 @@
     nodes: nodes,
     edges: edges
   };
+  var size = 400;
   var groups = {
+    ["Applied Research"]: {
+        icon: {
+            code: '\uf1fa',
+            size: size,
+            color: 'rgb(183,22,232)'
+        }
+    },
+    ["Basic Research"]: {
+        icon: {
+            code: '\uf032',
+            size: size,
+            color: 'rgb(49,133,156)'
+        }
+    },
+    ["Faculty"]: {
+        icon: {
+            code: '\uf0c3',
+            size: size,
+            color: 'rgb(99,37,35)'
+        }
+    },
     ["Grad Student"]: {
         icon: {
+            code: '\uf19d',
+            size: size,
+            color: 'rgb(204,193,218)'
+        }
+    },
+    ["Outreach - Citizen Science"]: {
+        icon: {
+            code: '\uf209',
+            size: size,
+            color: 'rgb(250,192,144)'
+        }
+    },
+    ["Outreach - K-12"]: {
+        icon: {
+            code: '\uf0f3',
+            size: size,
+            color: 'rgb(252,213,181)'
+        }
+    },
+    ["Outreach - Symposia"]: {
+        icon: {
+            code: 'S',
+            size: size,
+            color: 'rgb(228,108,10)'
+        }
+    },
+    ["Project"]: {
+        icon: {
+            code: '\uf140',
+            size: size,
+            color: 'rgb(63,128,205)'
+        }
+    },
+    ["Summer university classes"]: {
+        icon: {
+            code: '\uf17e',
+            size: size,
+            color: 'rgb(79,98,40)'
+        }
+    },
+    ["UG Student"]: {
+        icon: {
+            code: '\uf14b',
+            size: size,
+            color: 'rgb(96,74,123)'
+        }
+    },
+    ["USC Classes"]: {
+        icon: {
+            code: '\uf1b9',
+            size: size,
+            color: 'rgb(119,147,60)'
+        }
+    },
+    ["USC Fellowships"]: {
+        icon: {
+            code: '\uf180',
+            size: size,
+            color: 'rgb(195,214,155)'
+        }
+    },
+    ["Whitepapers"]: {
+        icon: {
             code: '\uf0c0',
-            size: 30,
-            color: 'orange'
+            size: size,
+            color: 'rgb(166,166,166)'
         }
     },
   }
@@ -110,12 +195,11 @@
         icon: {
           face: 'FontAwesome',
           code: '\uf0c0',
-          size: 30,
-          color: 'orange'
+          size: size,
         },
-        size: 10,
+        size: size,
         font: {
-            size: 12,
+            size: size / 2,
             face: "tahoma",
             color: 'black'
         },
@@ -176,7 +260,7 @@
         if (nodeIds.indexOf(edgesToUpdate[i].to) == -1){ nodeIds.push(edgesToUpdate[i].to) }
         if (nodeIds.indexOf(edgesToUpdate[i].from) == -1){ nodeIds.push(edgesToUpdate[i].from) }
       } else {
-        edgesToUpdate[i].color = { color: 'rgba(0,0,0,0.25)' };
+        edgesToUpdate[i].color = { color: 'rgba(0,0,0,0.15)' };
       }
     }
 
@@ -184,11 +268,11 @@
       var defaultOptions = getDefaultOptions(nodesToUpdate[i]);
       if (nodeIds.indexOf(nodesToUpdate[i].id) == -1) {
         var iconFaded = defaultOptions.icon;
-        iconFaded.color = 'rgba(0,0,0,0.25)';
+        iconFaded.color = 'rgba(0,0,0,0.15)';
         nodesToUpdate[i].icon = iconFaded;
 
         var fontFaded = defaultOptions.font;
-        fontFaded.color = 'rgba(0,0,0,0.25)';
+        fontFaded.color = 'rgba(0,0,0,0.15)';
         nodesToUpdate[i].font = fontFaded;
 
       } else {
@@ -254,17 +338,18 @@
     });
     var edited = { nodes: [], edges: []}
     parsed.nodes.forEach(function(node){
+      node.group = node.attributes.Category;
       var defaultOptions = getDefaultOptions(node);
       edited.nodes.push({
         id: node.id,
         label: node.label,
-        group: node.attributes.Category,
+        group: node.group,
         //title: 'Category: ' + node.attributes.Category,
-        //icon: defaultOptions.icon.clone(),
-        //color: defaultOptions.color.clone()
-        //x: node.x,
-        //y: node.y,
-        //fixed: true,
+        icon: defaultOptions.icon.clone(),
+        color: defaultOptions.color.clone(),
+        x: node.x,
+        y: node.y,
+        fixed: true,
         //size: 200
       });
     })
