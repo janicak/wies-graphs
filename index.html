@@ -11,37 +11,24 @@
 
   <style type="text/css">
     #mynetwork {
-      width: 800px;
+      width: 100%;
       height: 800px;
       border: 1px solid lightgray;
     }
     div.nodeContent {
-      position: relative;
-      border: 1px solid lightgray;
-      width: 480px;
+      position: absolute;
       height: 780px;
-      margin-top: -802px;
-      margin-left: 810px;
+      top: 100px;
+      right: 0;
       padding: 10px;
+      opacity: 0.55
     }
     pre {
       padding: 5px;
       margin: 5px;
     }
-    .string {
-      color: green;
-    }
-    .number {
-      color: darkorange;
-    }
-    .boolean {
-      color: blue;
-    }
-    .null {
-      color: magenta;
-    }
-    .key {
-      color: red;
+    .key span {
+      margin-right: 10px;
     }
   </style>
 
@@ -50,7 +37,11 @@
 <body>
 
 <h2>WIES Nodes</h2>
-<div style="visibility: hidden"><i class="fa fa-flag"></i> We use an icon once in the DOM so the CSS for fontAwesome is loaded.</div>
+<div class="key">
+<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i> Applied Research</span>
+<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i> Applied Research</span>
+</div>
+<button style="visibility: hidden" id="save-positions" type="button" onclick="savePositions();">Save Positions</button>
 <div id="mynetwork"></div>
 <div class="nodeContent"><h4>Node Content:</h4>
   <pre id="nodeContent"></pre>
@@ -87,7 +78,8 @@
   var edges = new vis.DataSet();
   var gephiImported;
   var nodeContent = document.getElementById('nodeContent');
-  loadJSON('./data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
+  //loadJSON('./data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
+  loadJSON('./data/WIES_nodes_manual.json', redrawAll2, function(err) {console.log('error')});
   var container = document.getElementById('mynetwork');
   var data = {
     nodes: nodes,
@@ -181,7 +173,7 @@
     },
     ["Whitepapers"]: {
         icon: {
-            code: '\uf0c0',
+            code: '\uf15b',
             size: size,
             color: 'rgb(166,166,166)'
         }
@@ -234,6 +226,7 @@
         centralGravity: 1,
         avoidOverlap: 0.25,
         springLength: 95,
+        //springConstant: 0.01,
         springConstant: 0.01,
         damping: 0.1
       }
@@ -278,7 +271,10 @@
       } else {
         nodesToUpdate[i].icon = defaultOptions.icon;
       }
+      delete nodesToUpdate[i].x
+      delete nodesToUpdate[i].y
     }
+    network.storePositions()
     nodes.update(nodesToUpdate);
     edges.update(edgesToUpdate);
   })
@@ -293,16 +289,19 @@
       var defaultOptions = getDefaultOptions(nodesToUpdate[i]);
       nodesToUpdate[i].icon = defaultOptions.icon;
       nodesToUpdate[i].font = defaultOptions.font;
+      delete nodesToUpdate[i].x
+      delete nodesToUpdate[i].y
     }
+    network.storePositions()
     nodes.update(nodesToUpdate);
     edges.update(edgesToUpdate);
   })
   var firstTime = true;
   network.on("afterDrawing", function (ctx) {
     if (firstTime) {
-          network.fit();
+          //network.fit();
           setTimeout(function () {
-              network.fit();
+              //network.fit();
           }, 200);
       }
       firstTime = false;
@@ -349,7 +348,7 @@
         color: defaultOptions.color.clone(),
         x: node.x,
         y: node.y,
-        fixed: true,
+        physics: false,
         //size: 200
       });
     })
@@ -363,6 +362,16 @@
     var data = nodes.get(2); // get the data from node 2 as example
     nodeContent.innerHTML = JSON.stringify(data,undefined,3); // show the data in the div
     network.fit(); // zoom to fit
+  }
+
+  function redrawAll2(savedJSON){
+    nodes.add(savedJSON.nodes);
+    edges.add(savedJSON.edges);
+    var data = nodes.get(2); // get the data from node 2 as example
+    nodeContent.innerHTML = JSON.stringify(data,undefined,3); // show the data in the div
+    network.fit(); // zoom to fit
+    var position = network.getViewPosition();
+    network.moveTo({ position: { x:position.x + 3000, y: position.y } });
   }
 
   function getDefaultOptions(node) {
@@ -385,6 +394,13 @@
     if (!icon) { icon = options.nodes.icon.clone() }
     if (!font) { font = options.nodes.font.clone() }
     return { color: color, icon: icon, font: font };
+  }
+
+  function savePositions(){
+    var edgesToUpdate = edges.get();
+    var nodesToUpdate = nodes.get();
+    var data = { edges: edgesToUpdate, nodes: nodesToUpdate }
+    console.log(JSON.stringify(data))
   }
 </script>
 
