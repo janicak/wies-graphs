@@ -51,7 +51,6 @@
 
 <h2>WIES Nodes</h2>
 <div style="visibility: hidden"><i class="fa fa-flag"></i> We use an icon once in the DOM so the CSS for fontAwesome is loaded.</div>
-
 <div id="mynetwork"></div>
 <div class="nodeContent"><h4>Node Content:</h4>
   <pre id="nodeContent"></pre>
@@ -88,7 +87,7 @@
   var edges = new vis.DataSet();
   var gephiImported;
   var nodeContent = document.getElementById('nodeContent');
-  loadJSON('/data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
+  loadJSON('./data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
   var container = document.getElementById('mynetwork');
   var data = {
     nodes: nodes,
