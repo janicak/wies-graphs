@@ -11,16 +11,26 @@
 
 
   <style type="text/css">
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    h2.title {
+      position: absolute;
+      height: auto;
+      top: 20px;
+      padding: 10px;
+    }
     #mynetwork {
-      width: 100%;
-      height: 800px;
-      border: 1px solid lightgray;
+      width: 100vw;
+      height: 100vh;
     }
     div.nodeContent {
       position: absolute;
       height: auto;
       top: 100px;
       right: 0;
+      width: 300px;
       padding: 10px;
       opacity: 0.55
     }
@@ -28,8 +38,16 @@
       padding: 5px;
       margin: 5px;
     }
+    .key {
+      position: absolute;
+      height: auto;
+      width: 200px;
+      padding: 10px;
+      top: 100px;
+    }
     .key span {
-      margin-right: 10px;
+      float: left;
+      clear: both;
     }
   </style>
 
@@ -72,97 +90,98 @@
       nodes: nodes,
       edges: edges
     };
-    var size = 400;
+    var fontSize = 200;
+    var nodeSize = 400;
     var groups = {
       ["Applied Research"]: {
           icon: {
-              code: '\uf1fa',
-              size: size,
-              color: 'rgb(183,22,232)'
+              code: '\uf1fb',
+              size: nodeSize,
+              color: 'rgb(175, 101, 197)'
           }
       },
       ["Basic Research"]: {
           icon: {
-              code: '\uf032',
-              size: size,
-              color: 'rgb(49,133,156)'
+              code: '\uf0c3',
+              size: nodeSize,
+              color: 'rgb(175, 101, 197)'
           }
       },
       ["Faculty"]: {
           icon: {
-              code: '\uf0c3',
-              size: size,
-              color: 'rgb(99,37,35)'
+              code: '\uf2c1',
+              size: nodeSize,
+              color: 'rgb(197, 77, 81)'
           }
       },
       ["Grad Student"]: {
           icon: {
               code: '\uf19d',
-              size: size,
-              color: 'rgb(204,193,218)'
+              size: nodeSize,
+              color: 'rgb(197, 77, 81)'
           }
       },
       ["Outreach - Citizen Science"]: {
           icon: {
-              code: '\uf209',
-              size: size,
-              color: 'rgb(250,192,144)'
+              code: '\uf2b5',
+              size: nodeSize,
+              color: 'rgb(17, 181, 153)'
           }
       },
       ["Outreach - K-12"]: {
           icon: {
               code: '\uf0f3',
-              size: size,
-              color: 'rgb(252,213,181)'
+              size: nodeSize,
+              color: 'rgb(17, 181, 153)'
           }
       },
       ["Outreach - Symposia"]: {
           icon: {
-              code: 'S',
-              size: size,
-              color: 'rgb(228,108,10)'
+              code: '\uf130',
+              size: nodeSize,
+              color: 'rgb(17, 181, 153)'
           }
       },
       ["Project"]: {
           icon: {
-              code: '\uf140',
-              size: size,
+              code: '\uf0e8',
+              size: nodeSize,
               color: 'rgb(63,128,205)'
           }
       },
       ["Summer university classes"]: {
           icon: {
-              code: '\uf17e',
-              size: size,
-              color: 'rgb(79,98,40)'
+              code: '\uf185',
+              size: nodeSize,
+              color: 'rgb(119,147,60)'
           }
       },
       ["UG Student"]: {
           icon: {
-              code: '\uf14b',
-              size: size,
-              color: 'rgb(96,74,123)'
+              code: '\uf2c2',
+              size: nodeSize,
+              color: 'rgb(197, 77, 81)'
           }
       },
       ["USC Classes"]: {
           icon: {
-              code: '\uf1b9',
-              size: size,
+              code: '\uf02d',
+              size: nodeSize,
               color: 'rgb(119,147,60)'
           }
       },
       ["USC Fellowships"]: {
           icon: {
-              code: '\uf180',
-              size: size,
-              color: 'rgb(195,214,155)'
+              code: '\uf091',
+              size: nodeSize,
+              color: 'rgb(173, 171, 27)'
           }
       },
       ["Whitepapers"]: {
           icon: {
-              code: '\uf15b',
-              size: size,
-              color: 'rgb(166,166,166)'
+              code: '\uf15c',
+              size: nodeSize,
+              color: 'rgb(154, 154, 154)'
           }
       },
     }
@@ -174,13 +193,14 @@
           icon: {
             face: 'FontAwesome',
             code: '\uf0c0',
-            size: size,
+            size: nodeSize,
           },
-          size: size,
+          size: nodeSize,
           font: {
-              size: size / 2,
+              size: fontSize,
               face: "tahoma",
-              color: 'black'
+              color: 'black',
+              vadjust: 150
           },
           borderWidth: 2,
           heightConstraint: 50,
@@ -192,6 +212,7 @@
           width: 1,
           smooth: {
             type: 'vertical',
+            roundness: .75
           },
           color: { color: 'black' }
       },
@@ -352,13 +373,19 @@
     }
 
     function redrawAll2(savedJSON){
+      for (var i = 0; i < savedJSON.nodes.length; ++i) {
+        var options = getDefaultOptions(savedJSON.nodes[i]);
+        savedJSON.nodes[i].font = options.font;
+        savedJSON.nodes[i].icon = options.icon;
+        savedJSON.nodes[i].color = options.color;
+        savedJSON.nodes[i].size = nodeSize;
+      }
       nodes.add(savedJSON.nodes);
       edges.add(savedJSON.edges);
       var data = nodes.get(2); // get the data from node 2 as example
       nodeContent.innerHTML = JSON.stringify(data,undefined,3); // show the data in the div
       network.fit(); // zoom to fit
-      var position = network.getViewPosition();
-      network.moveTo({ position: { x:position.x + 3000, y: position.y } });
+      //network.moveTo({ position: { x:position.x + 3000, y: position.y } });
       /*network.redraw();
       console.log('redrawn')
       setTimeout(function(){ network.redraw(); console.log('redrawn again')}, 3000)*/
@@ -398,24 +425,23 @@
 </head>
 
 <body onload="init();">
-
-<h2>WIES Nodes</h2>
+<h2 class="title">WIES Connections</h2>
 <div class="key">
-<span style="color:rgb(183,22,232)"><i class="fa fa-at"></i>: Applied Research</span>
-<span style="color:rgb(49,133,156)"><i class="fa fa-bold"></i>: Basic Research</span>
-<span style="color:rgb(99,37,35)"><i class="fa fa-flask"></i>: Faculty</span>
-<span style="color:rgb(204,193,218)"><i class="fa fa-graduation-cap"></i>: Grad Student</span>
-<span style="color:rgb(250,192,144)"><i class="fa fa-angellist"></i>: Outreach - Citizen Science</span>
-<span style="color:rgb(252,213,181)"><i class="fa fa-bell"></i>: Outreach - K-12</span>
-<span style="color:rgb(228,108,10)"><strong>S</strong>: Outreach - Symposia</span>
-<span style="color:rgb(63,128,205)"><i class="fa fa-bullseye"></i>: Major Program</span>
-<span style="color:rgb(79,98,40)"><i class="fa fa-skype"></i>: Summer university classes</span>
-<span style="color:rgb(96,74,123)"><i class="fa fa-pencil-square"></i>: UG Student</span>
-<span style="color:rgb(119,147,60)"><i class="fa fa-car"></i>: USC Classes</span>
-<span style="color:rgb(195,214,155)"><i class="fa fa-foursquare"></i>: USC Fellowships</span>
-<span style="color:rgb(166,166,166)"><i class="fa fa-file"></i>: Whitepapers</span>
+<span style="color:rgb(175, 101, 197)"><i class="fa fa-eyedropper"></i>: Applied Research</span>
+<span style="color:rgb(175, 101, 197)"><i class="fa fa-flask"></i>: Basic Research</span>
+<span style="color:rgb(197, 77, 81)"><i class="fa fa-id-badge"></i>: Faculty</span>
+<span style="color:rgb(197, 77, 81)"><i class="fa fa-graduation-cap"></i>: Grad Student</span>
+<span style="color:rgb(17, 181, 153)"><i class="fa fa-handshake-o"></i>: Outreach - Citizen Science</span>
+<span style="color:rgb(17, 181, 153)"><i class="fa fa-bell"></i>: Outreach - K-12</span>
+<span style="color:rgb(17, 181, 153)"><i class="fa fa-microphone"></i>: Outreach - Symposia</span>
+<span style="color:rgb(63,128,205)"><i class="fa fa-sitemap"></i>: Major Program</span>
+<span style="color:rgb(119,147,60)"><i class="fa fa-sun-o"></i>: Summer university classes</span>
+<span style="color:rgb(197, 77, 81)"><i class="fa fa-id-card"></i>: UG Student</span>
+<span style="color:rgb(119,147,60)"><i class="fa fa-book"></i>: USC Classes</span>
+<span style="color:rgb(173, 171, 27)"><i class="fa fa-trophy"></i>: USC Fellowships</span>
+<span style="color:rgb(154, 154, 154)"><i class="fa fa-file-text"></i>: Whitepapers</span>
 </div>
-<button style="visibility: hidden" id="save-positions" type="button" onclick="savePositions();">Save Positions</button>
+<button style="visibility: hidden; display: none;" id="save-positions" type="button" onclick="savePositions();">Save Positions</button>
 <div id="mynetwork"></div>
 <div class="nodeContent"><h4>Node Content:</h4>
   <pre id="nodeContent"></pre>
