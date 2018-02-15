@@ -359,9 +359,9 @@
       network.fit(); // zoom to fit
       var position = network.getViewPosition();
       network.moveTo({ position: { x:position.x + 3000, y: position.y } });
-      network.redraw();
+      /*network.redraw();
       console.log('redrawn')
-      setTimeout(function(){ network.redraw(); console.log('redrawn again')}, 3000)
+      setTimeout(function(){ network.redraw(); console.log('redrawn again')}, 3000)*/
     }
 
     function getDefaultOptions(node) {
@@ -397,7 +397,7 @@
 
 </head>
 
-<body onload="setTimeout(function(){init()}, 1000);">
+<body onload="init();">
 
 <h2>WIES Nodes</h2>
 <div class="key">
