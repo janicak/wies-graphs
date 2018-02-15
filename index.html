@@ -359,6 +359,9 @@
       network.fit(); // zoom to fit
       var position = network.getViewPosition();
       network.moveTo({ position: { x:position.x + 3000, y: position.y } });
+      network.redraw();
+      console.log('redrawn')
+      setTimeout(function(){ network.redraw(); console.log('redrawn again')}, 3000)
     }
 
     function getDefaultOptions(node) {
