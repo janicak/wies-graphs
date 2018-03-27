@@ -1,0 +1,28 @@
+{
+  "name": "wies-graphs",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janicak/wies-graphs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janicak/wies-graphs/issues"
+  },
+  "homepage": "https://github.com/janicak/wies-graphs#readme",
+  "dependencies": {
+    "vis": "^4.21.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.2.0",
+    "webpack-cli": "^2.0.13"
+  }
+}
