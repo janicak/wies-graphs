@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+h2.title {
+  position: absolute;
+  height: auto;
+  top: 20px;
+  padding: 10px;
+  margin: 0;
+}
+h4 {
+  margin: 0;
+}
+#mynetwork {
+  width: 100vw;
+  height: 100vh;
+}
+div.nodeContent {
+  position: absolute;
+  height: auto;
+  top: 20px;
+  right: 0;
+  width: auto;
+  padding: 10px;
+}
+pre {
+  padding: 5px;
+  margin: 0 5px 0 0;
+}
+.key {
+  position: absolute;
+  height: auto;
+  width: 200px;
+  padding: 10px;
+  top: 75px;
+}
+.key span {
+  float: left;
+  clear: both;
+}

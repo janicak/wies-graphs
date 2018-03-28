@@ -1,41 +1,19 @@
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+//const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en" >
-  <head>
-    <meta charset="utf-8">
-    <meta content="ie=edge" http-equiv="x-ua-compatible">
-
-    
-
-    
-      
-    
-
-    <title>WIES Nodes</title>
-
-    
-
-    
-
-    
-    
-  	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    
-
-    
-    
-  </head>
-  <body>
-    
-    
-      
+module.exports = {
+  entry:  './src/index.js',
+  devtool: 'cheap-source-map',
+  plugins: [
+    //new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      inject: false,
+      template: require('html-webpack-template'),
+      links: [
+        'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
+      ],
+      bodyHtmlSnippet: `
       <h2 class="title">WIES Connections</h2>
       <div class="key">
       <span style="color:rgb(175, 101, 197)"><i class="fa fa-eyedropper"></i>: Applied Research</span>
@@ -57,25 +35,23 @@
       <div class="nodeContent"><h4>Node Content:</h4>
         <pre id="nodeContent"></pre>
       </div>
-      
-    
-    
-    
-
-    
-
-    
-
-    
-
-    
-    
-    <script src="bundle.js" type="text/javascript"></script>
-    
-    
-
-    
-
-    
-  </body>
-</html>
+      `,
+      title: 'WIES Nodes'
+    })
+  ],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      }
+    ]
+  }
+};

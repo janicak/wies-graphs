@@ -1,4 +1,6 @@
 import vis from 'vis';
+import './style.css';
+import Data from '../data/WIES_nodes_manual.json';
 
 function init(){
   Object.prototype.clone = function() {
@@ -32,7 +34,7 @@ function init(){
   var gephiImported;
   var nodeContent = document.getElementById('nodeContent');
   //loadJSON('./data/WIES_nodes.json', redrawAll, function(err) {console.log('error')});
-  loadJSON('../data/WIES_nodes_manual.json', redrawAll2, function(err) {console.log('error')});
+  //loadJSON('../data/WIES_nodes_manual.json', redrawAll2, function(err) {console.log('error')});
   var container = document.getElementById('mynetwork');
   var data = {
     nodes: nodes,
@@ -194,6 +196,7 @@ function init(){
     }
   };
   network = new vis.Network(container, data, options);
+  redrawAll2(Data);
   network.on('click', function (params) {
     if (params.nodes.length > 0) {
       var nodeData = nodes.get(params.nodes[0]);
